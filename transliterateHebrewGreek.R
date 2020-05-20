@@ -1,32 +1,218 @@
 library(stringr)
 
-original_import <- read.delim("/Users/rivkahcarl/Desktop/testSampleTransliteration_R.txt", header=FALSE)
+original_import <- read.delim("/Users/rivkahcarl/Github/transliteration-projects/testSampleTransliteration_R.txt", header=FALSE)
+
+# Output list of unique words in the imported paragraph
+# This is helpful to determine if some special words need to be added to the list of problematic words
+unique_words <- unique(unlist(strsplit(as.character(original_import$V1), split=" ")))
 
 # Berachot Related words (Shem Hashem)
 original_import$V2 <- str_replace_all(original_import$V1, "בָּרוּךְ אַתָּה יְהֹוָה אֱלֹהֵינוּ מֶלֶךְ הָעוֹלָם", "Μπαρούχ ατά Αδωνάη, Ελοένου Μέλεχ α’ολάμ")
 original_import$V2 <- str_replace_all(original_import$V2, "בָּרוּךְ אַתָּה יְהֹוָה", "Μπαρούχ ατά Αδωνάη")
 original_import$V2 <- str_replace_all(original_import$V2, " לַיהוָֹה ", " λ'Αδωνάη ")
 original_import$V2 <- str_replace_all(original_import$V2, " וַיהוָֹה ", " βα'Αδωνάη ") 
-original_import$V2 <- str_replace_all(original_import$V2, " יְהֹוָה ", "Αδωνάη ")
+original_import$V2 <- str_replace_all(original_import$V2, " יְהֹוָה ", " Αδωνάη ")
+original_import$V2 <- str_replace_all(original_import$V2, "יְהֹוָה", "Αδωνάη")
 
 
+original_import$V2 <- str_replace_all(original_import$V2, "אֱלֹהֵינוּ", "Ελοένου")
+original_import$V2 <- str_replace_all(original_import$V2, "אֱלֹהֵֽינוּ", "Ελοένου")
+original_import$V2 <- str_replace_all(original_import$V2, "אֱלֹהִים", "Ελοίμ")
+
+# Repeated words
 original_import$V2 <- str_replace_all(original_import$V2, " בָּרוּךְ ", " μπαρούχ ")
 
-# Little Words, that will get messed up with letter replacements
+original_import$V2 <- str_replace_all(original_import$V2, " בְּיִשְׂרָאֵל ", " μπε'γισραέλ ")
+original_import$V2 <- str_replace_all(original_import$V2, " לְיִשְׂרָאֵל ", " λ'γισραέλ ")
+original_import$V2 <- str_replace_all(original_import$V2, " יִשְׂרָאֵל ", " γισραέλ ")
+
+# Little Words, that will get messed up with letter replacements 
+# or repeat frequently its easier to replace the word as a whole
 
 original_import$V2 <- str_replace_all(original_import$V2, " דָּוִד ", " νταβίδ ")
 original_import$V2 <- str_replace_all(original_import$V2, " הוּא ", " ου ")
+original_import$V2 <- str_replace_all(original_import$V2, " הִיא ", " οι ")
 original_import$V2 <- str_replace_all(original_import$V2, " אֶת ",  " εθ ")
 original_import$V2 <- str_replace_all(original_import$V2, " כָל ", " χολ ")
+# original_import$V2 <- str_replace_all(original_import$V2, " שֶׁכָּל ", "") #****
+original_import$V2 <- str_replace_all(original_import$V2, " בְּכָל ", " μπιχόλ ")
+
 original_import$V2 <- str_replace_all(original_import$V2, " מִן ", " μιν ")
 original_import$V2 <- str_replace_all(original_import$V2, " עוֹד ", " οδ ")
 original_import$V2 <- str_replace_all(original_import$V2, " כִּי ", " κι ")
 original_import$V2 <- str_replace_all(original_import$V2, " עַל ", " αλ ")
+original_import$V2 <- str_replace_all(original_import$V2, "לֹא", "λο")
 
-# Not sure about these, need to be careful with single letters like vav and final shin (because of final sigma)
+# original_import$V2 <- str_replace_all(original_import$V2, "גּוֹי", "") #*****
+
+# Not sure about these, need to be careful with single letters like single letter + Shvah in the beginning of a word
+# and final shin (because of final sigma)
 original_import$V2 <- str_replace_all(original_import$V2, " וְ", " β'")
+original_import$V2 <- str_replace_all(original_import$V2, " לְ", " λ'") #*****
+
 original_import$V2 <- str_replace_all(original_import$V2, "שׂ ", "σς ") 
 
+
+# Replace all word endings with yud and tav - Patach
+original_import$V2 <- str_replace_all(original_import$V2, "אַיו", "αβ")
+original_import$V2 <- str_replace_all(original_import$V2, "בַּיו", "μπαβ")
+original_import$V2 <- str_replace_all(original_import$V2, "בַיו", "βαβ")
+original_import$V2 <- str_replace_all(original_import$V2, "גַיו", "γαβ")
+original_import$V2 <- str_replace_all(original_import$V2, "גַּיו", "γκαβ")
+original_import$V2 <- str_replace_all(original_import$V2, "דַיו", "δαβ")
+original_import$V2 <- str_replace_all(original_import$V2, "דַּיו", "νταβ")
+original_import$V2 <- str_replace_all(original_import$V2, "הַיו", "αβ")
+original_import$V2 <- str_replace_all(original_import$V2, "וַיו", "βαβ")
+original_import$V2 <- str_replace_all(original_import$V2, "זַיו", "ζαβ")
+original_import$V2 <- str_replace_all(original_import$V2, "זַּיו", "τζαβ")
+original_import$V2 <- str_replace_all(original_import$V2, "חַיו", "χαβ")
+original_import$V2 <- str_replace_all(original_import$V2, "טַיו", "ταβ")
+#original_import$V2 <- str_replace_all(original_import$V2, "יַ", "για")
+original_import$V2 <- str_replace_all(original_import$V2, "כַּיו", "καβ")
+original_import$V2 <- str_replace_all(original_import$V2, "כַיו", "χαβ")
+original_import$V2 <- str_replace_all(original_import$V2, "לַיו", "λαβ")
+original_import$V2 <- str_replace_all(original_import$V2, "מַיו", "μαβ")
+original_import$V2 <- str_replace_all(original_import$V2, "נַיו", "ναβ")
+original_import$V2 <- str_replace_all(original_import$V2, "סַיו", "σαβ")
+original_import$V2 <- str_replace_all(original_import$V2, "עַיו", "αβ")
+original_import$V2 <- str_replace_all(original_import$V2, "פַיו", "φαβ")
+original_import$V2 <- str_replace_all(original_import$V2, "פַּיו", "παβ")
+original_import$V2 <- str_replace_all(original_import$V2, "צַיו", "τσαβ")
+original_import$V2 <- str_replace_all(original_import$V2, "קַיו", "καβ")
+original_import$V2 <- str_replace_all(original_import$V2, "רַיו", "ραβ")
+original_import$V2 <- str_replace_all(original_import$V2, "שַׁיו", "σσαβ")
+original_import$V2 <- str_replace_all(original_import$V2, "שַׂיו", "σαβ")
+original_import$V2 <- str_replace_all(original_import$V2, "תַּיו", "ταβ")
+original_import$V2 <- str_replace_all(original_import$V2, "תַיו", "θαβ")
+
+# Replace all word endings with yud and tav - Kamats
+original_import$V2 <- str_replace_all(original_import$V2, "אָיו", "αβ")
+original_import$V2 <- str_replace_all(original_import$V2, "בָּיו", "μπαβ")
+original_import$V2 <- str_replace_all(original_import$V2, "בָיו", "βαβ")
+original_import$V2 <- str_replace_all(original_import$V2, "גָיו", "γαβ")
+original_import$V2 <- str_replace_all(original_import$V2, "גָּיו", "γκαβ")
+original_import$V2 <- str_replace_all(original_import$V2, "דָיו", "δαβ")
+original_import$V2 <- str_replace_all(original_import$V2, "דָּיו", "νταβ")
+original_import$V2 <- str_replace_all(original_import$V2, "הָיו", "αβ")
+original_import$V2 <- str_replace_all(original_import$V2, "וָיו", "βαβ")
+original_import$V2 <- str_replace_all(original_import$V2, "זָיו", "ζαβ")
+original_import$V2 <- str_replace_all(original_import$V2, "זָּיו", "τζαβ")
+original_import$V2 <- str_replace_all(original_import$V2, "חָיו", "χαβ")
+original_import$V2 <- str_replace_all(original_import$V2, "טָיו", "ταβ")
+#original_import$V2 <- str_replace_all(original_import$V2, "יָו", "γιαβ")
+original_import$V2 <- str_replace_all(original_import$V2, "כָּיו", "καβ")
+original_import$V2 <- str_replace_all(original_import$V2, "כָיו", "χαβ")
+original_import$V2 <- str_replace_all(original_import$V2, "לָיו", "λαβ")
+original_import$V2 <- str_replace_all(original_import$V2, "מָיו", "μαβ")
+original_import$V2 <- str_replace_all(original_import$V2, "נָיו", "ναβ")
+original_import$V2 <- str_replace_all(original_import$V2, "סָיו", "σαβ")
+original_import$V2 <- str_replace_all(original_import$V2, "עָיו", "αβ")
+original_import$V2 <- str_replace_all(original_import$V2, "פָיו", "φαβ")
+original_import$V2 <- str_replace_all(original_import$V2, "פָּיו", "παβ")
+original_import$V2 <- str_replace_all(original_import$V2, "צָיו", "τσαβ")
+original_import$V2 <- str_replace_all(original_import$V2, "קָיו", "καβ")
+original_import$V2 <- str_replace_all(original_import$V2, "רָיו", "ραβ")
+original_import$V2 <- str_replace_all(original_import$V2, "שָׁיו", "σσαβ")
+original_import$V2 <- str_replace_all(original_import$V2, "שָׂיו", "σαβ")
+original_import$V2 <- str_replace_all(original_import$V2, "תָּיו", "ταβ")
+original_import$V2 <- str_replace_all(original_import$V2, "תָיו", "θαβ")
+
+# Replace Chirik with Yud and vav
+original_import$V2 <- str_replace_all(original_import$V2, "אִיו", "ιβ")
+original_import$V2 <- str_replace_all(original_import$V2, "בִּיו", "μπιβ")
+original_import$V2 <- str_replace_all(original_import$V2, "בִיו", "βιβ")
+original_import$V2 <- str_replace_all(original_import$V2, "גִיו", "γιβ")
+original_import$V2 <- str_replace_all(original_import$V2, "גִּיו", "γκιβ")
+original_import$V2 <- str_replace_all(original_import$V2, "דִיו", "διβ")
+original_import$V2 <- str_replace_all(original_import$V2, "דִּיו", "ντιβ")
+# "הִי", 
+original_import$V2 <- str_replace_all(original_import$V2, "וִיו", "βιβ")
+original_import$V2 <- str_replace_all(original_import$V2, "זִיו", "ζιβ")
+original_import$V2 <- str_replace_all(original_import$V2, "זִּיו", "τζιβ")
+original_import$V2 <- str_replace_all(original_import$V2, "חִיו", "χιβ")
+original_import$V2 <- str_replace_all(original_import$V2, "טִיו", "τιβ")
+# **יִ, γι
+original_import$V2 <- str_replace_all(original_import$V2, "כִּיו", "κιβ")
+original_import$V2 <- str_replace_all(original_import$V2, "כִיו", "χιβ")
+original_import$V2 <- str_replace_all(original_import$V2, "לִיו", "λιβ")
+original_import$V2 <- str_replace_all(original_import$V2, "מִיו", "μιβ")
+original_import$V2 <- str_replace_all(original_import$V2, "נִיו", "νιβ")
+original_import$V2 <- str_replace_all(original_import$V2, "סִיו", "σιβ")
+# "עִי", 
+original_import$V2 <- str_replace_all(original_import$V2, "פִיו", "φιβ")
+original_import$V2 <- str_replace_all(original_import$V2, "פִּיו", "πιβ")
+original_import$V2 <- str_replace_all(original_import$V2, "צִיו", "τσιβ")
+original_import$V2 <- str_replace_all(original_import$V2, "קִיו", "κιβ")
+original_import$V2 <- str_replace_all(original_import$V2, "רִיו", "ριβ")
+original_import$V2 <- str_replace_all(original_import$V2, "שִׁיו", "σσιβ")
+original_import$V2 <- str_replace_all(original_import$V2, "שִׂיו", "σιβ")
+original_import$V2 <- str_replace_all(original_import$V2, "תִּיו", "τιβ")
+original_import$V2 <- str_replace_all(original_import$V2, "תִיו", "θιβ")
+
+# Replace ending with yud and mem
+# Replace all word endings with yud and mem - Patach
+original_import$V2 <- str_replace_all(original_import$V2, "אַיִם", "αγιμ")
+original_import$V2 <- str_replace_all(original_import$V2, "בַּיִם", "μπαγιμ")
+original_import$V2 <- str_replace_all(original_import$V2, "בַיִם", "βαγιμ")
+original_import$V2 <- str_replace_all(original_import$V2, "גַיִם", "γαγιμ")
+original_import$V2 <- str_replace_all(original_import$V2, "גַּיִם", "γκαγιμ")
+original_import$V2 <- str_replace_all(original_import$V2, "דַיִם", "δαγιμ")
+original_import$V2 <- str_replace_all(original_import$V2, "דַּיִם", "νταγιμ")
+original_import$V2 <- str_replace_all(original_import$V2, "הַיִם", "αγιμ")
+original_import$V2 <- str_replace_all(original_import$V2, "וַיִם", "βαγιμ")
+original_import$V2 <- str_replace_all(original_import$V2, "זַיִם", "ζαγιμ")
+original_import$V2 <- str_replace_all(original_import$V2, "זַּיִם", "τζαγιμ")
+original_import$V2 <- str_replace_all(original_import$V2, "חַיִם", "χαγιμ")
+original_import$V2 <- str_replace_all(original_import$V2, "טַיִם", "ταγιμ")
+#original_import$V2 <- str_replace_all(original_import$V2, "יַ", "για")
+original_import$V2 <- str_replace_all(original_import$V2, "כַּיִם", "καγιμ")
+original_import$V2 <- str_replace_all(original_import$V2, "כַיִם", "χαγιμ")
+original_import$V2 <- str_replace_all(original_import$V2, "לַיִם", "λαγιμ")
+original_import$V2 <- str_replace_all(original_import$V2, "מַיִם", "μαγιμ")
+original_import$V2 <- str_replace_all(original_import$V2, "נַיִם", "ναγιμ")
+original_import$V2 <- str_replace_all(original_import$V2, "סַיִם", "σαγιμ")
+original_import$V2 <- str_replace_all(original_import$V2, "עַיִם", "αγιμ")
+original_import$V2 <- str_replace_all(original_import$V2, "פַיִם", "φαγιμ")
+original_import$V2 <- str_replace_all(original_import$V2, "פַּיִם", "παγιμ")
+original_import$V2 <- str_replace_all(original_import$V2, "צַיִם", "τσαγιμ")
+original_import$V2 <- str_replace_all(original_import$V2, "קַיִם", "καγιμ")
+original_import$V2 <- str_replace_all(original_import$V2, "רַיִם", "ραγιμ")
+original_import$V2 <- str_replace_all(original_import$V2, "שַׁיִם", "σσαγιμ")
+original_import$V2 <- str_replace_all(original_import$V2, "שַׂיִם", "σαγιμ")
+original_import$V2 <- str_replace_all(original_import$V2, "תַּיִם", "ταγιμ")
+original_import$V2 <- str_replace_all(original_import$V2, "תַיִם", "θαγιμ")
+
+# Replace all word endings with yud and mem - Kamats
+original_import$V2 <- str_replace_all(original_import$V2, "אָיִם", "αγιμ")
+original_import$V2 <- str_replace_all(original_import$V2, "בָּיִם", "μπαγιμ")
+original_import$V2 <- str_replace_all(original_import$V2, "בָיִם", "βαγιμ")
+original_import$V2 <- str_replace_all(original_import$V2, "גָיִם", "γαγιμ")
+original_import$V2 <- str_replace_all(original_import$V2, "גָּיִם", "γκαγιμ")
+original_import$V2 <- str_replace_all(original_import$V2, "דָיִם", "δαγιμ")
+original_import$V2 <- str_replace_all(original_import$V2, "דָּיִם", "νταγιμ")
+original_import$V2 <- str_replace_all(original_import$V2, "הָיִם", "αγιμ")
+original_import$V2 <- str_replace_all(original_import$V2, "וָיִם", "βαγιμ")
+original_import$V2 <- str_replace_all(original_import$V2, "זָיִם", "τζαγιμ")
+original_import$V2 <- str_replace_all(original_import$V2, "זָּיִם", "τζαγιμ")
+original_import$V2 <- str_replace_all(original_import$V2, "חָיִם", "χαγιμ")
+original_import$V2 <- str_replace_all(original_import$V2, "טָיִם", "ταγιμ")
+#original_import$V2 <- str_replace_all(original_import$V2, "יָו", "γιαβ")
+original_import$V2 <- str_replace_all(original_import$V2, "כָּיִם", "καγιμ")
+original_import$V2 <- str_replace_all(original_import$V2, "כָיִם", "χαγιμ")
+original_import$V2 <- str_replace_all(original_import$V2, "לָיו", "λαβ")
+original_import$V2 <- str_replace_all(original_import$V2, "מָיו", "μαβ")
+original_import$V2 <- str_replace_all(original_import$V2, "נָיו", "ναβ")
+original_import$V2 <- str_replace_all(original_import$V2, "סָיו", "σαβ")
+original_import$V2 <- str_replace_all(original_import$V2, "עָיו", "αβ")
+original_import$V2 <- str_replace_all(original_import$V2, "פָיו", "φαβ")
+original_import$V2 <- str_replace_all(original_import$V2, "פָּיו", "παβ")
+original_import$V2 <- str_replace_all(original_import$V2, "צָיו", "τσαβ")
+original_import$V2 <- str_replace_all(original_import$V2, "קָיו", "καβ")
+original_import$V2 <- str_replace_all(original_import$V2, "רָיו", "ραβ")
+original_import$V2 <- str_replace_all(original_import$V2, "שָׁיו", "σσαβ")
+original_import$V2 <- str_replace_all(original_import$V2, "שָׂיו", "σαβ")
+original_import$V2 <- str_replace_all(original_import$V2, "תָּיו", "ταβ")
+original_import$V2 <- str_replace_all(original_import$V2, "תָיו", "θαβ")
 
 
 # Replace all letters combined with "וּ" at the beginning of the word
@@ -92,6 +278,9 @@ original_import$V2 <- str_replace_all(original_import$V2, "שׂוּ", "σου")
 original_import$V2 <- str_replace_all(original_import$V2, "תּוּ", "του")
 original_import$V2 <- str_replace_all(original_import$V2, "תוּ", "θου")
 
+# Replace single letter vav with ou 
+# TODO Might need to move to the end on how interactions go
+original_import$V2 <- str_replace_all(original_import$V2, "וּ", "ου")
 
 
 original_import$V2 <- str_replace_all(original_import$V2, "אוֹ", "ο")
@@ -125,6 +314,10 @@ original_import$V2 <- str_replace_all(original_import$V2, "שׂוֹ", "σο")
 original_import$V2 <- str_replace_all(original_import$V2, "תּוֹ", "το")
 
 
+
+
+
+# Replace ending Patach Hey
 
 original_import$V2 <- str_replace_all(original_import$V2, "אַה ", "α ")
 original_import$V2 <- str_replace_all(original_import$V2, "בַּה ", "μπα ")
@@ -189,6 +382,8 @@ original_import$V2 <- str_replace_all(original_import$V2, "שָׂה", "σα")
 original_import$V2 <- str_replace_all(original_import$V2, "תָּה", "τα")
 original_import$V2 <- str_replace_all(original_import$V2, "תָה", "θα")
 
+
+# Replace Chirik with Yud
 original_import$V2 <- str_replace_all(original_import$V2, "אִי", "ι")
 original_import$V2 <- str_replace_all(original_import$V2, "בִּי", "μπι")
 original_import$V2 <- str_replace_all(original_import$V2, "בִי", "βι")
@@ -219,6 +414,38 @@ original_import$V2 <- str_replace_all(original_import$V2, "שִׁי", "σσι")
 original_import$V2 <- str_replace_all(original_import$V2, "שִׂי", "σι")
 original_import$V2 <- str_replace_all(original_import$V2, "תִּי", "τι")
 original_import$V2 <- str_replace_all(original_import$V2, "תִי", "θι")
+
+# Replace tsereh with a yud
+original_import$V2 <- str_replace_all(original_import$V2,"אֵי", "ε") #*****
+original_import$V2 <- str_replace_all(original_import$V2, "בֵּי", "μπε")
+original_import$V2 <- str_replace_all(original_import$V2, "בֵי", "βε")
+original_import$V2 <- str_replace_all(original_import$V2, "גֵי", "γε")
+original_import$V2 <- str_replace_all(original_import$V2, "גֵּי", "γκε")
+original_import$V2 <- str_replace_all(original_import$V2, "דֵי", "δε")
+original_import$V2 <- str_replace_all(original_import$V2, "דֵּי", "ντε")
+original_import$V2 <- str_replace_all(original_import$V2, "הֵי", "ε") #*****
+original_import$V2 <- str_replace_all(original_import$V2, "וֵי", "βε")
+original_import$V2 <- str_replace_all(original_import$V2, "זֵי", "ζε")
+original_import$V2 <- str_replace_all(original_import$V2, "זֵּי", "τζε")
+original_import$V2 <- str_replace_all(original_import$V2, "חֵי", "χε")
+original_import$V2 <- str_replace_all(original_import$V2, "טֵי", "τε")
+original_import$V2 <- str_replace_all(original_import$V2, "יֵי", "γιε") #*****
+original_import$V2 <- str_replace_all(original_import$V2, "כֵּי", "κε")
+original_import$V2 <- str_replace_all(original_import$V2, "כֵי", "χε")
+original_import$V2 <- str_replace_all(original_import$V2, "לֵי", "λε")
+original_import$V2 <- str_replace_all(original_import$V2, "מֵי", "με")
+original_import$V2 <- str_replace_all(original_import$V2, "נֵי", "νε")
+original_import$V2 <- str_replace_all(original_import$V2, "סֵי", "σε")
+original_import$V2 <- str_replace_all(original_import$V2, "עֵי", "ε")
+original_import$V2 <- str_replace_all(original_import$V2, "פֵי", "φε")
+original_import$V2 <- str_replace_all(original_import$V2, "פֵּי", "πε")
+original_import$V2 <- str_replace_all(original_import$V2, "צֵי", "τσε")
+original_import$V2 <- str_replace_all(original_import$V2, "קֵי", "κε")
+original_import$V2 <- str_replace_all(original_import$V2, "רֵי", "ρε")
+original_import$V2 <- str_replace_all(original_import$V2, "שֵׁי", "σσε")
+original_import$V2 <- str_replace_all(original_import$V2, "שֵׂי", "σε")
+original_import$V2 <- str_replace_all(original_import$V2, "תֵּי", "τε")
+original_import$V2 <- str_replace_all(original_import$V2, "תֵי", "θε")
 
 
 # Final Endings with changed final letters
@@ -253,40 +480,40 @@ original_import$V2 <- str_replace_all(original_import$V2, "שַׂךְ ", "σαχ
 original_import$V2 <- str_replace_all(original_import$V2, "תַּךְ ", "ταχ ")
 original_import$V2 <- str_replace_all(original_import$V2, "תַךְ ", "θαχ ")
 
-# אָךְ, αχ
-# בָּךְ, μπαχ
-# בָךְ, βαχ
-# גָךְ, γαχ
-# גָּךְ, γκαχ
-# דָךְ, δαχ
-# דָּךְ, νταχ
-# הָךְ, αχ
-# וָךְ, βαχ
-# זָךְ, ζαχ
-# זָּךְ, τζαχ
-# טָךְ, ταχ
-# יָךְ, γιαχ
-# כָּךְ, καχ
-# כָךְ, χαχ
-# לָךְ, λαχ
-# מָךְ, μαχ
-# נָךְ, ναχ
-# סָךְ, σαχ
-# עָךְ, αχ
-# פָךְ, φαχ
-# פָּךְ, παχ
-# צָךְ, τσαχ
-# קָךְ, καχ
-# רָךְ, ραχ
-# שָׁךְ, σσαχ
-# שָׂךְ, σαχ
-# תָּךְ, ταχ
-# תָךְ, θαχ
+original_import$V2 <- str_replace_all(original_import$V2, "אָךְ", "αχ")
+original_import$V2 <- str_replace_all(original_import$V2, "בָּךְ", "μπαχ")
+original_import$V2 <- str_replace_all(original_import$V2, "בָךְ", "βαχ")
+original_import$V2 <- str_replace_all(original_import$V2, "גָךְ", "γαχ")
+original_import$V2 <- str_replace_all(original_import$V2, "גָּךְ", "γκαχ")
+original_import$V2 <- str_replace_all(original_import$V2, "דָךְ", "δαχ")
+original_import$V2 <- str_replace_all(original_import$V2, "דָּךְ", "νταχ")
+original_import$V2 <- str_replace_all(original_import$V2, "הָךְ", "αχ")
+original_import$V2 <- str_replace_all(original_import$V2, "וָךְ", "βαχ")
+original_import$V2 <- str_replace_all(original_import$V2, "זָךְ", "ζαχ")
+original_import$V2 <- str_replace_all(original_import$V2, "זָּךְ", "τζαχ")
+original_import$V2 <- str_replace_all(original_import$V2, "טָךְ", "ταχ")
+original_import$V2 <- str_replace_all(original_import$V2, "יָךְ", "γιαχ")
+original_import$V2 <- str_replace_all(original_import$V2, "כָּךְ", "καχ")
+original_import$V2 <- str_replace_all(original_import$V2, "כָךְ", "χαχ")
+original_import$V2 <- str_replace_all(original_import$V2, "לָךְ", "λαχ")
+original_import$V2 <- str_replace_all(original_import$V2, "מָךְ", "μαχ")
+original_import$V2 <- str_replace_all(original_import$V2, "נָךְ", "ναχ")
+original_import$V2 <- str_replace_all(original_import$V2, "סָךְ", "σαχ")
+original_import$V2 <- str_replace_all(original_import$V2, "עָךְ", "αχ")
+original_import$V2 <- str_replace_all(original_import$V2, "פָךְ", "φαχ")
+original_import$V2 <- str_replace_all(original_import$V2, "פָּךְ", "παχ")
+original_import$V2 <- str_replace_all(original_import$V2, "צָךְ", "τσαχ")
+original_import$V2 <- str_replace_all(original_import$V2, "קָךְ", "καχ")
+original_import$V2 <- str_replace_all(original_import$V2, "רָךְ", "ραχ")
+original_import$V2 <- str_replace_all(original_import$V2, "שָׁךְ", "σσαχ")
+original_import$V2 <- str_replace_all(original_import$V2, "שָׂךְ", "σαχ")
+original_import$V2 <- str_replace_all(original_import$V2, "תָּךְ", "ταχ")
+original_import$V2 <- str_replace_all(original_import$V2, "תָךְ", "θαχ")
 
 
 
 
-
+# Replace single letter patach
 
 original_import$V2 <- str_replace_all(original_import$V2, "אַ", "α")
 original_import$V2 <- str_replace_all(original_import$V2, "בַּ", "μπα")
@@ -320,6 +547,41 @@ original_import$V2 <- str_replace_all(original_import$V2, "שַׂ", "σα")
 original_import$V2 <- str_replace_all(original_import$V2, "תַּ", "τα")
 original_import$V2 <- str_replace_all(original_import$V2, "תַ", "θα")
 
+# Replace single letter patach + shvah
+
+original_import$V2 <- str_replace_all(original_import$V2, "אֲ", "α")
+original_import$V2 <- str_replace_all(original_import$V2, "בֲּ", "μπα")
+original_import$V2 <- str_replace_all(original_import$V2, "בֲ", "βα")
+original_import$V2 <- str_replace_all(original_import$V2, "גֲ", "γα")
+original_import$V2 <- str_replace_all(original_import$V2, "גֲּ", "γκα")
+original_import$V2 <- str_replace_all(original_import$V2, "דֲ", "δα")
+original_import$V2 <- str_replace_all(original_import$V2, "דֲּ", "ντα")
+original_import$V2 <- str_replace_all(original_import$V2, "הֲ", "α")
+original_import$V2 <- str_replace_all(original_import$V2, "וֲ", "βα")
+original_import$V2 <- str_replace_all(original_import$V2, "זֲ", "ζα")
+original_import$V2 <- str_replace_all(original_import$V2, "זֲּ", "τζα")
+original_import$V2 <- str_replace_all(original_import$V2, "חֲ", "χα")
+original_import$V2 <- str_replace_all(original_import$V2, "טֲ", "τα")
+original_import$V2 <- str_replace_all(original_import$V2, "יֲ", "για")
+original_import$V2 <- str_replace_all(original_import$V2, "כֲּ", "κα")
+original_import$V2 <- str_replace_all(original_import$V2, "כֲ", "χα")
+original_import$V2 <- str_replace_all(original_import$V2, "לֲ", "λα")
+original_import$V2 <- str_replace_all(original_import$V2, "מֲ", "μα")
+original_import$V2 <- str_replace_all(original_import$V2, "נֲ", "να")
+original_import$V2 <- str_replace_all(original_import$V2, "סֲ", "σα")
+original_import$V2 <- str_replace_all(original_import$V2, "עֲ", "α")
+original_import$V2 <- str_replace_all(original_import$V2, "פֲ", "φα")
+original_import$V2 <- str_replace_all(original_import$V2, "פֲּ", "πα")
+original_import$V2 <- str_replace_all(original_import$V2, "צֲ", "τσα")
+original_import$V2 <- str_replace_all(original_import$V2, "קֲ", "κα")
+original_import$V2 <- str_replace_all(original_import$V2, "רֲ", "ρα")
+original_import$V2 <- str_replace_all(original_import$V2, "שֲׁ", "σσα")
+original_import$V2 <- str_replace_all(original_import$V2, "שֲׂ", "σα")
+original_import$V2 <- str_replace_all(original_import$V2, "תֲּ", "τα")
+original_import$V2 <- str_replace_all(original_import$V2, "תֲ", "θα")
+
+# Replace single letter kamats
+
 original_import$V2 <- str_replace_all(original_import$V2, "אָ", "α")
 original_import$V2 <- str_replace_all(original_import$V2, "בָּ", "μπα")
 original_import$V2 <- str_replace_all(original_import$V2, "בָ", "βα")
@@ -352,7 +614,40 @@ original_import$V2 <- str_replace_all(original_import$V2, "שָׂ", "σα")
 original_import$V2 <- str_replace_all(original_import$V2, "תָּ", "τα")
 original_import$V2 <- str_replace_all(original_import$V2, "תָ", "θα")
 
+# Replace single letter kamats + shvah
 
+original_import$V2 <- str_replace_all(original_import$V2, "אֳ", "α")
+original_import$V2 <- str_replace_all(original_import$V2, "בֳּ", "μπα")
+original_import$V2 <- str_replace_all(original_import$V2, "בֳ", "βα")
+original_import$V2 <- str_replace_all(original_import$V2, "גֳ", "γα")
+original_import$V2 <- str_replace_all(original_import$V2, "גֳּ", "γκα")
+original_import$V2 <- str_replace_all(original_import$V2, "דֳ", "δα")
+original_import$V2 <- str_replace_all(original_import$V2, "דֳּ", "ντα")
+original_import$V2 <- str_replace_all(original_import$V2, "הֳ", "α")
+original_import$V2 <- str_replace_all(original_import$V2, "וֳ", "βα")
+original_import$V2 <- str_replace_all(original_import$V2, "זֳ", "ζα")
+original_import$V2 <- str_replace_all(original_import$V2, "זֳּ", "τζα")
+original_import$V2 <- str_replace_all(original_import$V2, "חֳ", "χα")
+original_import$V2 <- str_replace_all(original_import$V2, "טֳ", "τα")
+original_import$V2 <- str_replace_all(original_import$V2, "יֳ", "για")
+original_import$V2 <- str_replace_all(original_import$V2, "כֳּ", "κα")
+original_import$V2 <- str_replace_all(original_import$V2, "כֳ", "χα")
+original_import$V2 <- str_replace_all(original_import$V2, "לֳ", "λα")
+original_import$V2 <- str_replace_all(original_import$V2, "מֳ", "μα")
+original_import$V2 <- str_replace_all(original_import$V2, "נֳ", "να")
+original_import$V2 <- str_replace_all(original_import$V2, "סֳ", "σα")
+original_import$V2 <- str_replace_all(original_import$V2, "עֳ", "α")
+original_import$V2 <- str_replace_all(original_import$V2, "פֳ", "φα")
+original_import$V2 <- str_replace_all(original_import$V2, "פֳּ", "πα")
+original_import$V2 <- str_replace_all(original_import$V2, "צֳ", "τσα")
+original_import$V2 <- str_replace_all(original_import$V2, "קֳ", "κα")
+original_import$V2 <- str_replace_all(original_import$V2, "רֳ", "ρα")
+original_import$V2 <- str_replace_all(original_import$V2, "שֳׁ", "σσα")
+original_import$V2 <- str_replace_all(original_import$V2, "שֳׂ", "σα")
+original_import$V2 <- str_replace_all(original_import$V2, "תֳּ", "τα")
+original_import$V2 <- str_replace_all(original_import$V2, "תֳ", "θα")
+
+# Replace single letter chirik
 
 original_import$V2 <- str_replace_all(original_import$V2, "אִ", "ι")
 original_import$V2 <- str_replace_all(original_import$V2, "בִּ", "μπι")
@@ -385,8 +680,144 @@ original_import$V2 <- str_replace_all(original_import$V2, "שִׂ", "σι")
 original_import$V2 <- str_replace_all(original_import$V2, "תִּ", "τι")
 original_import$V2 <- str_replace_all(original_import$V2, "תִ", "θι")
 
+# Replace single letter segol
+
+original_import$V2 <- str_replace_all(original_import$V2,"אֶ", "ε") 
+original_import$V2 <- str_replace_all(original_import$V2, "בֶּ", "μπε")
+original_import$V2 <- str_replace_all(original_import$V2, "בֶ", "βε")
+original_import$V2 <- str_replace_all(original_import$V2, "גֶ", "γε")
+original_import$V2 <- str_replace_all(original_import$V2, "גֶּ", "γκε")
+original_import$V2 <- str_replace_all(original_import$V2, "דֶ", "δε")
+original_import$V2 <- str_replace_all(original_import$V2, "דֶּ", "ντε")
+original_import$V2 <- str_replace_all(original_import$V2, "הֶ", "ε") 
+original_import$V2 <- str_replace_all(original_import$V2, "וֶ", "βε")
+original_import$V2 <- str_replace_all(original_import$V2, "זֶ", "ζε")
+original_import$V2 <- str_replace_all(original_import$V2, "זֶּ", "τζε")
+original_import$V2 <- str_replace_all(original_import$V2, "חֶ", "χε")
+original_import$V2 <- str_replace_all(original_import$V2, "טֶ", "τε")
+original_import$V2 <- str_replace_all(original_import$V2, "יֶ", "γιε")
+original_import$V2 <- str_replace_all(original_import$V2, "כֶּ", "κε")
+original_import$V2 <- str_replace_all(original_import$V2, "כֶ", "χε")
+original_import$V2 <- str_replace_all(original_import$V2, "לֶ", "λε")
+original_import$V2 <- str_replace_all(original_import$V2, "מֶ", "με")
+original_import$V2 <- str_replace_all(original_import$V2, "נֶ", "νε")
+original_import$V2 <- str_replace_all(original_import$V2, "סֶ", "σε")
+original_import$V2 <- str_replace_all(original_import$V2, "עֶ", "ε")
+original_import$V2 <- str_replace_all(original_import$V2, "פֶ", "φε")
+original_import$V2 <- str_replace_all(original_import$V2, "פֶּ", "πε")
+original_import$V2 <- str_replace_all(original_import$V2, "צֶ", "τσε")
+original_import$V2 <- str_replace_all(original_import$V2, "קֶ", "κε")
+original_import$V2 <- str_replace_all(original_import$V2, "רֶ", "ρε")
+original_import$V2 <- str_replace_all(original_import$V2, "שֶׁ", "σσε")
+original_import$V2 <- str_replace_all(original_import$V2, "שֶׂ", "σε")
+original_import$V2 <- str_replace_all(original_import$V2, "תֶּ", "τε")
+original_import$V2 <- str_replace_all(original_import$V2, "תֶ", "θε")
 
 
+# Replace single letter segol + shvah
+
+original_import$V2 <- str_replace_all(original_import$V2,"אֱ", "ε") 
+original_import$V2 <- str_replace_all(original_import$V2, "בֱּ", "μπε")
+original_import$V2 <- str_replace_all(original_import$V2, "בֱ", "βε")
+original_import$V2 <- str_replace_all(original_import$V2, "גֱ", "γε")
+original_import$V2 <- str_replace_all(original_import$V2, "גֱּ", "γκε")
+original_import$V2 <- str_replace_all(original_import$V2, "דֱ", "δε")
+original_import$V2 <- str_replace_all(original_import$V2, "דֱּ", "ντε")
+original_import$V2 <- str_replace_all(original_import$V2, "הֱ", "ε") 
+original_import$V2 <- str_replace_all(original_import$V2, "וֱ", "βε")
+original_import$V2 <- str_replace_all(original_import$V2, "זֱ", "ζε")
+original_import$V2 <- str_replace_all(original_import$V2, "זֱּ", "τζε")
+original_import$V2 <- str_replace_all(original_import$V2, "חֱ", "χε")
+original_import$V2 <- str_replace_all(original_import$V2, "טֱ", "τε")
+original_import$V2 <- str_replace_all(original_import$V2, "יֱ", "γιε")
+original_import$V2 <- str_replace_all(original_import$V2, "כֱּ", "κε")
+original_import$V2 <- str_replace_all(original_import$V2, "כֱ", "χε")
+original_import$V2 <- str_replace_all(original_import$V2, "לֱ", "λε")
+original_import$V2 <- str_replace_all(original_import$V2, "מֱ", "με")
+original_import$V2 <- str_replace_all(original_import$V2, "נֱ", "νε")
+original_import$V2 <- str_replace_all(original_import$V2, "סֱ", "σε")
+original_import$V2 <- str_replace_all(original_import$V2, "עֱ", "ε")
+original_import$V2 <- str_replace_all(original_import$V2, "פֱ", "φε")
+original_import$V2 <- str_replace_all(original_import$V2, "פֱּ", "πε")
+original_import$V2 <- str_replace_all(original_import$V2, "צֱ", "τσε")
+original_import$V2 <- str_replace_all(original_import$V2, "קֱ", "κε")
+original_import$V2 <- str_replace_all(original_import$V2, "רֱ", "ρε")
+original_import$V2 <- str_replace_all(original_import$V2, "שֱׁ", "σσε")
+original_import$V2 <- str_replace_all(original_import$V2, "שֱׂ", "σε")
+original_import$V2 <- str_replace_all(original_import$V2, "תֱּ", "τε")
+original_import$V2 <- str_replace_all(original_import$V2, "תֱ", "θε")
+
+
+
+# Replace single letter tsereh (Sefardi pronunciation)
+
+original_import$V2 <- str_replace_all(original_import$V2,"אֵ", "ε") #*****
+original_import$V2 <- str_replace_all(original_import$V2, "בֵּ", "μπε")
+original_import$V2 <- str_replace_all(original_import$V2, "בֵ", "βε")
+original_import$V2 <- str_replace_all(original_import$V2, "גֵ", "γε")
+original_import$V2 <- str_replace_all(original_import$V2, "גֵּ", "γκε")
+original_import$V2 <- str_replace_all(original_import$V2, "דֵ", "δε")
+original_import$V2 <- str_replace_all(original_import$V2, "דֵּ", "ντε")
+original_import$V2 <- str_replace_all(original_import$V2, "הֵ", "ε") #*****
+original_import$V2 <- str_replace_all(original_import$V2, "וֵ", "βε")
+original_import$V2 <- str_replace_all(original_import$V2, "זֵ", "ζε")
+original_import$V2 <- str_replace_all(original_import$V2, "זֵּ", "τζε")
+original_import$V2 <- str_replace_all(original_import$V2, "חֵ", "χε")
+original_import$V2 <- str_replace_all(original_import$V2, "טֵ", "τε")
+original_import$V2 <- str_replace_all(original_import$V2, "יֵ", "γιε") #*****
+original_import$V2 <- str_replace_all(original_import$V2, "כֵּ", "κε")
+original_import$V2 <- str_replace_all(original_import$V2, "כֵ", "χε")
+original_import$V2 <- str_replace_all(original_import$V2, "לֵ", "λε")
+original_import$V2 <- str_replace_all(original_import$V2, "מֵ", "με")
+original_import$V2 <- str_replace_all(original_import$V2, "נֵ", "νε")
+original_import$V2 <- str_replace_all(original_import$V2, "סֵ", "σε")
+original_import$V2 <- str_replace_all(original_import$V2, "עֵ", "ε")
+original_import$V2 <- str_replace_all(original_import$V2, "פֵ", "φε")
+original_import$V2 <- str_replace_all(original_import$V2, "פֵּ", "πε")
+original_import$V2 <- str_replace_all(original_import$V2, "צֵ", "τσε")
+original_import$V2 <- str_replace_all(original_import$V2, "קֵ", "κε")
+original_import$V2 <- str_replace_all(original_import$V2, "רֵ", "ρε")
+original_import$V2 <- str_replace_all(original_import$V2, "שֵׁ", "σσε")
+original_import$V2 <- str_replace_all(original_import$V2, "שֵׂ", "σε")
+original_import$V2 <- str_replace_all(original_import$V2, "תֵּ", "τε")
+original_import$V2 <- str_replace_all(original_import$V2, "תֵ", "θε")
+
+
+# Replace single letter shuruk
+original_import$V2 <- str_replace_all(original_import$V2, "אֻ", "ου")
+original_import$V2 <- str_replace_all(original_import$V2, "בֻּ", "μπου")
+original_import$V2 <- str_replace_all(original_import$V2, "בֻ", "βου")
+original_import$V2 <- str_replace_all(original_import$V2, "גֻ", "γου")
+original_import$V2 <- str_replace_all(original_import$V2, "גֻּ", "γκου")
+original_import$V2 <- str_replace_all(original_import$V2, "דֻ", "δου")
+original_import$V2 <- str_replace_all(original_import$V2, "דֻּ", "ντου")
+original_import$V2 <- str_replace_all(original_import$V2, "הֻ", "ου")
+original_import$V2 <- str_replace_all(original_import$V2, "וֻ", "βου")
+original_import$V2 <- str_replace_all(original_import$V2, "זֻ", "ζου")
+original_import$V2 <- str_replace_all(original_import$V2, "זֻּ", "τζου")
+original_import$V2 <- str_replace_all(original_import$V2, "חֻ", "χου")
+original_import$V2 <- str_replace_all(original_import$V2, "טֻ", "του")
+original_import$V2 <- str_replace_all(original_import$V2, "יֻ", "γιου")
+original_import$V2 <- str_replace_all(original_import$V2, "כֻּ", "κου")
+original_import$V2 <- str_replace_all(original_import$V2, "כֻ", "χου")
+original_import$V2 <- str_replace_all(original_import$V2, "לֻ", "λου")
+original_import$V2 <- str_replace_all(original_import$V2, "מֻ", "μου")
+original_import$V2 <- str_replace_all(original_import$V2, "נֻ", "νου")
+original_import$V2 <- str_replace_all(original_import$V2, "סֻ", "σου")
+original_import$V2 <- str_replace_all(original_import$V2, "עֻ", "ου")
+original_import$V2 <- str_replace_all(original_import$V2, "פֻ", "φου")
+original_import$V2 <- str_replace_all(original_import$V2, "פֻּ", "που")
+original_import$V2 <- str_replace_all(original_import$V2, "צֻ", "τσου")
+original_import$V2 <- str_replace_all(original_import$V2, "קֻ", "κου")
+original_import$V2 <- str_replace_all(original_import$V2, "רֻ", "ρου")
+original_import$V2 <- str_replace_all(original_import$V2, "שֻׁ", "σσου")
+original_import$V2 <- str_replace_all(original_import$V2, "שֻׂ", "σου")
+original_import$V2 <- str_replace_all(original_import$V2, "תֻּ", "του")
+original_import$V2 <- str_replace_all(original_import$V2, "תֻ", "θου")
+
+
+
+# Replace single letter shvah
 # אְ, 
 original_import$V2 <- str_replace_all(original_import$V2, "בְּ", "μπ")
 original_import$V2 <- str_replace_all(original_import$V2, "בְ", "β")
@@ -418,7 +849,56 @@ original_import$V2 <- str_replace_all(original_import$V2, "שְׂ", "σ")
 original_import$V2 <- str_replace_all(original_import$V2, "תְּ", "τ")
 original_import$V2 <- str_replace_all(original_import$V2, "תְ", "θ")
 
+# Replace Cholam 
+original_import$V2 <- str_replace_all(original_import$V2, "אֹ", "ο")
+original_import$V2 <- str_replace_all(original_import$V2, "ֹבּ", "μπο")
+original_import$V2 <- str_replace_all(original_import$V2, "ֹב", "βο")
+original_import$V2 <- str_replace_all(original_import$V2, "ֹג", "γο")
+original_import$V2 <- str_replace_all(original_import$V2, "ֹגּ", "γκο")
+original_import$V2 <- str_replace_all(original_import$V2, "ֹד", "δο")
+original_import$V2 <- str_replace_all(original_import$V2, "ֹדּ", "ντο")
+original_import$V2 <- str_replace_all(original_import$V2, "ֹה", "ο")
+original_import$V2 <- str_replace_all(original_import$V2, "ֹו", "ο") #*** May cause issues 
+original_import$V2 <- str_replace_all(original_import$V2, "ֹז", "ζο")
+original_import$V2 <- str_replace_all(original_import$V2, "ֹזּ", "τζο")
+original_import$V2 <- str_replace_all(original_import$V2, "ֹח", "χο")
+original_import$V2 <- str_replace_all(original_import$V2, "ֹט", "το")
+original_import$V2 <- str_replace_all(original_import$V2, "ֹי", "γιο")
+original_import$V2 <- str_replace_all(original_import$V2, "ֹכּ", "κο")
+original_import$V2 <- str_replace_all(original_import$V2, "ֹכ", "χο")
+original_import$V2 <- str_replace_all(original_import$V2, "ֹֹל", "λο")
+original_import$V2 <- str_replace_all(original_import$V2, "ֹמֹ", "μο")
+original_import$V2 <- str_replace_all(original_import$V2, "ֹנ", "νο")
+original_import$V2 <- str_replace_all(original_import$V2, "ֹס", "σο")
+original_import$V2 <- str_replace_all(original_import$V2, "ֹע", "ο")
+original_import$V2 <- str_replace_all(original_import$V2, "ֹפ", "φο")
+original_import$V2 <- str_replace_all(original_import$V2, "ֹפּ", "πο")
+original_import$V2 <- str_replace_all(original_import$V2, "ֹצ", "τσο")
+original_import$V2 <- str_replace_all(original_import$V2, "ֹק", "κο")
+original_import$V2 <- str_replace_all(original_import$V2, "ֹר", "ρο")
+original_import$V2 <- str_replace_all(original_import$V2, "ֹשׁ", "σσο")
+original_import$V2 <- str_replace_all(original_import$V2, "ֹשׂ", "σο")
+original_import$V2 <- str_replace_all(original_import$V2, "ֹתּ", "το")
+original_import$V2 <- str_replace_all(original_import$V2, "ֹת", "θο")
 
+
+# Replace single letters - sofit
+original_import$V2 <- str_replace_all(original_import$V2, "ךְ", "χ")
+original_import$V2 <- str_replace_all(original_import$V2, "ךּ", "χ")
+original_import$V2 <- str_replace_all(original_import$V2, "ם","μ")
+original_import$V2 <- str_replace_all(original_import$V2, "ן", "ν")
+original_import$V2 <- str_replace_all(original_import$V2, "ף", "φ")
+original_import$V2 <- str_replace_all(original_import$V2, "ףּ", "π")
+original_import$V2 <- str_replace_all(original_import$V2, "ךָ", "χα")
+original_import$V2 <- str_replace_all(original_import$V2, "ץ", "τς")
+
+
+
+
+
+
+# Replace single letter no vowel
+# TODO This likely needs to be adjusted since any single letter is likely tied to another vowel or sound
 # א, 
 original_import$V2 <- str_replace_all(original_import$V2, "בּ", "μπ")
 original_import$V2 <- str_replace_all(original_import$V2, "ב", "β")
@@ -453,46 +933,6 @@ original_import$V2 <- str_replace_all(original_import$V2, "ת", "θ")
 
 
 
-# אֹ, ο
-# ֹבּ, μπο
-# ֹב, βο
-# ֹג, γο
-# ֹגּ, γκο
-# ֹד, δο
-# ֹדּ, ντο
-# ֹה, ο
-# # ***ו- βο
-# ֹז, ζο
-# ֹזּ, τζο
-# ֹח, χο
-# ֹט, το
-# ֹי, γιο
-# ֹכּ, κο
-# ֹכ, χο
-# ֹֹֹל, λο
-# ֹמ, μο
-# ֹנ, νο
-# ֹס, σο
-# ֹע, ο
-# ֹפ, φο
-# ֹפּ, πο
-# ֹצ, τσο
-# ֹק, κο
-# ֹר, ρο
-# ֹשׁ, σσο
-# ֹשׂ, σο
-# ֹתּ, το
-# ֹת, θο
-
-
-# ךְ
-# ךּ
-# ם - μ
-# ן - ν
-# ף - φ
-# ףּ - π
-# ךָ - χα
-# ץ - τς
 
 
 
